@@ -15,7 +15,7 @@ Given JSON files, the objective is to query this data via Postresql.
 This pipeline deserializes json files into Plain Old Java Objects (POJOs) and deserializes these objects into Postgresql. 
 
 1) To automate schema translation, POJO skeletons are created using [JSON Schema to POJO](http://www.jsonschema2pojo.org/)
-2) We deserialize JSON using Jackson's[ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html), a popular library used to de/serialize or map Java objects. 
+2) We deserialize JSON using Jackson's [ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html), a popular library used to de/serialize or map Java objects. 
 3) After establishing a PsqlClient, we create tables for Orders and Users (a Connection is reused for every interaction with the database).
 
 Further work includes querying the database using SQL scripts to extract a dedicated table for Users, and additional backend work to create Metrics around these datasets.
