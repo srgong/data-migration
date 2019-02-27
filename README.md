@@ -12,7 +12,7 @@ This project addresses this [prompt](https://github.com/Samariya57/coding_challe
 # Approach
 
 Given JSON files, the objective is to query this data via Postresql. 
-This pipeline transfers json files into Plain Old Java Objects (POJO) and writes inserts these objects into Postgresql. 
+This pipeline deserializes json files into Plain Old Java Objects (POJOs) and serializes these objects into Postgresql. 
 
 1) POJOs are first created using[JSON Schema to POJO](http://www.jsonschema2pojo.org/)
 2) We deserialize JSON using Jackson's[ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html), a popular library used to de/serialize or map Java objects. 
@@ -20,6 +20,7 @@ This pipeline transfers json files into Plain Old Java Objects (POJO) and writes
 4) Orders are written to the database by inserting values (trick involves overriding the toString() function).
 4) A list of LineItems is created by looping through all Orders and concatenating them into one. This is written to a table in the database.
 5) Metrics are created by looping through all Orders and LineItems that share the same order id. This is written to a Metrics table in the database.
+
 
 # To Run
 
