@@ -1,5 +1,8 @@
 package sql;
 
+import model.LineItem;
+import model.LineItems;
+import model.Metrics;
 import model.Orders;
 
 /**
@@ -7,13 +10,42 @@ import model.Orders;
  */
 public class Query {
 
-    public static String insert(Orders o) {
-        return "INSERT INTO mytable(id,email,closed_at,created_at,updated_at,number,note,token,gateway,test,total_price,subtotal_price,total_weight,total_tax,taxes_included,currency,financial_status,confirmed,total_discounts,total_line_items_price,cart_token,buyer_accepts_marketing,name,referring_site,landing_site,cancelled_at,cancel_reason,total_price_usd,checkout_token,reference,user_id,location_id,source_identifier,source_url,processed_at,device_id,phone,customer_locale,app_id,browser_ip,landing_site_ref,order_number,processing_method,checkout_id,source_name,fulfillment_status,tags,contact_email,order_status_url,total_discount) VALUES\n" +
-                o.getOrders().toString();
+    public static String insertOrders(Orders o) {
+        return "INSERT INTO orders(id,email,closed_at,created_at,updated_at,number,note,token,gateway,test,total_price,subtotal_price,total_weight,total_tax,taxes_included,currency,financial_status,confirmed,total_discounts,total_line_items_price,cart_token,buyer_accepts_marketing,name,referring_site,landing_site,cancelled_at,cancel_reason,total_price_usd,checkout_token,reference,user_id,location_id,source_identifier,source_url,processed_at,device_id,phone,customer_locale,app_id,browser_ip,landing_site_ref,order_number,processing_method,checkout_id,source_name,fulfillment_status,tags,contact_email,order_status_url,total_discount) VALUES\n" +
+                o.getOrders().toString() + ";";
+    }
+
+    public static String insertLineItems(LineItems li) {
+        return "INSERT INTO line_items(id,variant_id,quantity,product_id) VALUES \n" +
+                li.getLineItems().toString() + ";";
+    }
+
+    public static String insertMetrics(Metrics m) {
+        return "INSERT INTO metrics(email,order_id,lineitem_id,quantity,product_id) VALUES \n" +
+                m.toString() + ";";
+    }
+
+    public static String createLineItemsTable() {
+        return "CREATE TABLE IF NOT EXISTS line_items(\n" +
+                "   id         INTEGER  NOT NULL PRIMARY KEY \n" +
+                "  ,variant_id INTEGER  NOT NULL\n" +
+                "  ,quantity   BIT  NOT NULL\n" +
+                "  ,product_id INTEGER  NOT NULL\n" +
+                ");\n";
+    }
+
+    public static String createMetricsTable() {
+        return "CREATE TABLE IF NOT EXISTS metrics(\n" +
+                "  email                   VARCHAR(21) NOT NULL\n" +
+                "  ,order_id   VARCHAR(21) NOT NULL\n" +
+                "  ,lineitem_id INTEGER  NOT NULL\n" +
+                "  ,quantity   BIT  NOT NULL\n" +
+                "  ,product_id INTEGER  NOT NULL\n" +
+                ");\n";
     }
 
     public static String createTable() {
-        return "CREATE TABLE mytable(\n" +
+        return "CREATE TABLE IF NOT EXISTS orders(\n" +
                 "   id                      INTEGER  NOT NULL PRIMARY KEY \n" +
                 "  ,email                   VARCHAR(21) NOT NULL\n" +
                 "  ,closed_at               VARCHAR(30)\n" +

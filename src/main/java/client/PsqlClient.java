@@ -1,5 +1,8 @@
 package client;
 
+import model.LineItem;
+import model.LineItems;
+import model.Metrics;
 import model.Orders;
 import sql.Query;
 
@@ -31,12 +34,59 @@ public class PsqlClient {
         return true;
     }
 
-    public boolean insert(Orders orders) {
+    public boolean createLineItemsTable() {
         try {
             Statement s = c.createStatement();
-            String query = Query.insert(orders);
-            System.out.println(query);
-//            s.execute(query);
+            String query = Query.createLineItemsTable();
+            s.execute(query);
+            s.close();
+        } catch(java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean createMetricsTable() {
+        try {
+            Statement s = c.createStatement();
+            String query = Query.createMetricsTable();
+            s.execute(query);
+            s.close();
+        } catch(java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean insertOrders(Orders orders) {
+        try {
+            Statement s = c.createStatement();
+            String query = Query.insertOrders(orders);
+            s.execute(query);
+            s.close();
+        } catch(java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean insertLineItems(LineItems li) {
+        try {
+            Statement s = c.createStatement();
+            String query = Query.insertLineItems(li);
+            s.execute(query);
+            s.close();
+        } catch(java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean insertMetrics(Metrics m) {
+        try {
+            Statement s = c.createStatement();
+            String query = Query.insertMetrics(m);
+            s.execute(query);
             s.close();
         } catch(java.sql.SQLException e) {
             e.printStackTrace();
@@ -63,7 +113,7 @@ public class PsqlClient {
         return c;
     }
 
-    public static void closeConnection(Connection c) {
+    public static void closeConnection() {
         try {
             c.close();
         } catch (SQLException s) {

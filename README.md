@@ -16,9 +16,10 @@ This pipeline transfers json files into Plain Old Java Objects (POJO) and writes
 
 1) POJOs are first created using[JSON Schema to POJO](http://www.jsonschema2pojo.org/)
 2) We deserialize JSON using Jackson's[ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html), a popular library used to de/serialize or map Java objects. 
-3) After establishing a PsqlClient, we create tables for Orders and User (a Connection is reused for every interaction with the database).
-
-Further work includes querying the database to extract a dedicated table for Users, and to create a Metrics table around these datasets.
+3) After establishing a PsqlClient, we create tables for Orders, LineItems (which are subitems of the order), and Metrics.
+4) Orders are written to the database by inserting values (trick involves overriding the toString() function).
+4) A list of LineItems is created by looping through all Orders and concatenating them into one. This is written to a table in the database.
+5) Metrics are created by looping through all Orders and LineItems that share the same order id. This is written to a Metrics table in the database.
 
 # To Run
 

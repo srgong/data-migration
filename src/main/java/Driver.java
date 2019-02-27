@@ -1,4 +1,6 @@
 import client.PsqlClient;
+import model.LineItems;
+import model.Metrics;
 import model.Orders;
 
 import java.io.File;
@@ -6,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.NotDirectoryException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import processing.Transform;
 
 /**
  * Created by Sharon on 2/20/19.
@@ -18,11 +21,6 @@ public class Driver {
      */
     public static void checkInputDir(File f) throws NotDirectoryException {
         if(!f.isDirectory()) throw new NotDirectoryException("This is not a directory");
-    }
-
-    public static void checkInputFiles(File f) throws FileNotFoundException {
-        if(!f.exists()) throw new FileNotFoundException();
-        if(f.isDirectory()) throw new FileNotFoundException();
     }
 
     public static void main(String args[]) {
@@ -38,16 +36,28 @@ public class Driver {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            checkInputDir(new File(inputDir));
-            PsqlClient client = new PsqlClient(db_host);
-
             File input = new File(inputDir);
+            checkInputDir(input);
+
+            PsqlClient client = new PsqlClient(db_host);
             client.createOrdersTable();
+            client.createLineItemsTable();
+            client.createMetricsTable();
 
+            // serialize json to object & build orders table
             Orders orders = objectMapper.readValue(input, Orders.class);
-            client.insert(orders);
+            client.insertOrders(orders);
 
-            System.out.println(orders);
+            // extract line items from orders & build line items table with added orders_id
+            LineItems lineItems = Transform.extractLineItems(orders.getOrders());
+            client.insertLineItems(lineItems);
+
+            // gather metrics on orders and lineitems (view of all customers and the products/quantity of items they purchased)
+            // build metrics table
+            Metrics metrics = Transform.getMetrics(orders, lineItems);
+            client.insertMetrics(metrics);
+
+            client.closeConnection();
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
